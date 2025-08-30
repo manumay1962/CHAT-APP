@@ -86,23 +86,31 @@ export const checkAuth = (req,res)=>{
 
 ///to update profile detail
 
-export const updateProfile = async(req,res)=>{
+export const updateProfile = async (req, res) => {
     try {
-        const {profilePic,bio,fullName} = req.body;
-
+        const { profilePic, bio, fullName } = req.body;
         const userId = req.user._id;
-        let updatedUser;
-        if(!profilePic){
-            await User.findByIdAndUpdate(userId,{bio,fullName},{new:true})
-        }else{
-            const upload= await cloudinary.uploader.upload(profilePic);
 
-            updatedUser = await User.findByIdAndUpdate(userId,{profilePic:upload.secure_url,bio,fullName},{new:true})
+        let updatedUser;
+
+        if (!profilePic) {
+            updatedUser = await User.findByIdAndUpdate(
+                userId,
+                { bio, fullName },
+                { new: true }
+            );
+        } else {
+            const upload = await cloudinary.uploader.upload(profilePic);
+            updatedUser = await User.findByIdAndUpdate(
+                userId,
+                { profilePic: upload.secure_url, bio, fullName },
+                { new: true }
+            );
         }
-        res.json({success:true,user:updatedUser})
+
+        res.json({ success: true, user: updatedUser });
     } catch (error) {
         console.log(error);
-        res.json({success:false,message:error.message})
-        
+        res.json({ success: false, message: error.message });
     }
-}
+};

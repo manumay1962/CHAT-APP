@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import assets from "../assets/assets";
+import { AuthContext } from "../../context/AuthContext";
 
 const LoginPage = () => {
   const [currState, setCurrState] = useState("Sign up");
@@ -8,23 +9,44 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [bio, setBio] = useState("");
   const [isDataSubmitted, setIsDataSubmitted] = useState(false);
+  const [isChecked, setIsChecked] = useState(false); // ✅ added state
 
-   function onSubmitHandler(event){
+  const { login } = useContext(AuthContext);
+
+  function onSubmitHandler(event) {
     event.preventDefault();
-    if( currState === 'Sign up' &&  !isDataSubmitted){
-      setIsDataSubmitted(true);
-      return
+
+    // ✅ checkbox check
+    if (!isChecked) {
+      alert("Please agree to the terms of use & privacy policy.");
+      return;
     }
+
+    if (currState === "Sign up" && !isDataSubmitted) {
+      setIsDataSubmitted(true);
+      return;
+    }
+
+    login(currState === "Sign up" ? "signup" : "login", {
+      fullName,
+      email,
+      password,
+      bio,
+    });
   }
 
   return (
     <div className="min-h-screen bg-cover bg-center flex items-center justify-center gap-8 sm:justify-evenly max-sm:flex-col backdrop-blur-2xl">
       <img src={assets.logo_big} alt="" className="w-[min(30vw,250px)]" />
-      <form onSubmit={onSubmitHandler} className="border-2 bg-white/8 text-white border-gray-500 p-6 flex flex-col gap-6 rounded-lg shadow-lg">
+      <form
+        onSubmit={onSubmitHandler}
+        className="border-2 bg-white/8 text-white border-gray-500 p-6 flex flex-col gap-6 rounded-lg shadow-lg"
+      >
         <h2 className="font-medium text-2xl flex justify-between items-center">
           {currState}
           {isDataSubmitted && (
-            <img onClick={()=> setIsDataSubmitted(false)}
+            <img
+              onClick={() => setIsDataSubmitted(false)}
               src={assets.arrow_icon}
               alt=""
               className="w-5  cursor-pointer"
@@ -79,7 +101,11 @@ const LoginPage = () => {
           {currState === "Sign up" ? "Create Account" : "Login Now"}
         </button>
         <div>
-          <input type="checkbox" />
+          <input
+            type="checkbox"
+            checked={isChecked}
+            onChange={() => setIsChecked(!isChecked)} // ✅ toggle logic
+          />
           <p>Agree to the terms of use & provacy policy</p>
         </div>
         <div className="flex flex-col gap-2 ">

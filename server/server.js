@@ -20,14 +20,14 @@ export const userSocketMap = {};
 //io connection handler
 io.on("connection", (socket)=>{
     const userId = socket.handshake.query.userId;
-    console.log("user coneected",userId);
+    console.log("user connected",userId);
     
     if(userId) userSocketMap[userId] = socket.id;
     //emit online user to all coneected client
 
     io.emit("getOnlineUsers",Object.keys(userSocketMap));
 
-    socket.on("disconnected",()=>{
+    socket.on("disconnect",()=>{
         console.log("user disconnected",userId);
         delete userSocketMap[userId];
         io.emit("getOnlineUsers",Object.keys(userSocketMap))

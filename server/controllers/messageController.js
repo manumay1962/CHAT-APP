@@ -81,7 +81,7 @@ try {
     let imageUrl;
     if(image){
         const uploadResponse = await cloudinary.uploader.upload(image)
-        imageUrl = uploadResponse.secure.url;
+        imageUrl = uploadResponse.secure_url;
 
     }
 
@@ -104,7 +104,7 @@ try {
     console.log(error.message);
     res.json({
         success:false,
-        message:error.messages
+        message:error.message
     })
 }
 }
